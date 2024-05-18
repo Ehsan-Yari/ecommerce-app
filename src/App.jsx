@@ -23,26 +23,23 @@ const App = () => {
     }
   };
 
-  const findProductId = (productId) => {
-    return cart.findIndex((item) => item.id === productId);
-  };
-
-  const findProduct = (productId) => {
-    return cart.find(( item ) => item.id === productId);
-  };
+  const findProductIndex = (productId) => cart.findIndex((item) => item.id === productId);
 
   const handleAddToCart = (item) => {
-    if (findProductId(item?.id) === -1) {
-      setCart((prevState) => [...prevState, { ...item, quantity: 1 }]);
-    } else {
-      const selectedProduct = findProduct(item?.id);
-      const newProduct = {
-        ...selectedProduct,
-        quantity: (selectedProduct.quantity += 1),
-      };
-      const newCart = cart.filter(( item ) => item.id !== newProduct.id);
-      setCart([...newCart, newProduct]);
-    }
+    setCart((prevState) => {
+      const productIndex = findProductIndex(item?.id);
+
+      if (productIndex === -1) {
+        return [...prevState, { ...item, quantity: 1 }];
+      } else {
+        const newCart = [...prevState];
+        newCart[productIndex] = {
+          ...newCart[productIndex],
+          quantity: newCart[productIndex].quantity + 1
+        };
+        return newCart;
+      }
+    });
   };
 
 
