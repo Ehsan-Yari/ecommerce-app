@@ -43,6 +43,8 @@ const App = () => {
   };
 
 
+  console.log(cart,'@@')
+
   useEffect(() => {
     getProducts();
   }, []);
