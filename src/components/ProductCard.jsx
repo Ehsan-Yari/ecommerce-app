@@ -1,6 +1,6 @@
 import { FaCartPlus } from "react-icons/fa";
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, onClick }) => {
   return (
     <div
       title={product?.title}
@@ -23,6 +23,9 @@ const ProductCard = ({ product }) => {
       <div className="mt-4 flex items-center justify-between">
         <span className="font-medium text-gray-500">{product?.price}$</span>
         <FaCartPlus
+          onClick={() => {
+            onClick(product);
+          }}
           className="cursor-pointer transition-all duration-200 hover:opacity-70"
           size={28}
           title="Add to Cart"

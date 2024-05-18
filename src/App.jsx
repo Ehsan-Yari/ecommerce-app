@@ -7,6 +7,7 @@ const App = () => {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [cart, setCart] = useState([]);
 
   const getProducts = async () => {
     setIsLoading(true);
@@ -22,6 +23,29 @@ const App = () => {
     }
   };
 
+  const findProductId = (productId) => {
+    return cart.findIndex((item) => item.id === productId);
+  };
+
+  const findProduct = (productId) => {
+    return cart.find(( item ) => item.id === productId);
+  };
+
+  const handleAddToCart = (item) => {
+    if (findProductId(item?.id) === -1) {
+      setCart((prevState) => [...prevState, { ...item, quantity: 1 }]);
+    } else {
+      const selectedProduct = findProduct(item?.id);
+      const newProduct = {
+        ...selectedProduct,
+        quantity: (selectedProduct.quantity += 1),
+      };
+      const newCart = cart.filter(( item ) => item.id !== newProduct.id);
+      setCart([...newCart, newProduct]);
+    }
+  };
+
+
   useEffect(() => {
     getProducts();
   }, []);
@@ -35,7 +59,7 @@ const App = () => {
 
   return (
     <div>
-      <ProductsList products={products} />
+      <ProductsList products={products} onClick={handleAddToCart} />
     </div>
   );
 };
