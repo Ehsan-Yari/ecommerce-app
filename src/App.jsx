@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import ProductsList from "./components/ProductsList";
 import Alert from "./components/Alert";
 import Loading from "./components/Loading";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Cart from "./pages/Cart";
 
 const App = () => {
   const [products, setProducts] = useState([]);
@@ -23,7 +25,8 @@ const App = () => {
     }
   };
 
-  const findProductIndex = (productId) => cart.findIndex((item) => item.id === productId);
+  const findProductIndex = (productId) =>
+    cart.findIndex((item) => item.id === productId);
 
   const handleAddToCart = (item) => {
     setCart((prevState) => {
@@ -35,15 +38,29 @@ const App = () => {
         const newCart = [...prevState];
         newCart[productIndex] = {
           ...newCart[productIndex],
-          quantity: newCart[productIndex].quantity + 1
+          quantity: newCart[productIndex].quantity + 1,
         };
         return newCart;
       }
     });
   };
 
+  const handleRemoveFromCart = (productId) => {
+    setCart(cart.filter((item) => item.id !== productId));
+  };
 
-  console.log(cart,'@@')
+  const handleChangeQuantity = (productId, quantity) => {
+    setCart((prevState) => {
+      const productIndex = findProductIndex(productId);
+
+      const newCart = [...prevState];
+      newCart[productIndex] = {
+        ...newCart[productIndex],
+        quantity: quantity,
+      };
+      return newCart;
+    });
+  };
 
   useEffect(() => {
     getProducts();
@@ -56,11 +73,24 @@ const App = () => {
     return <Alert message="Something went wrong!" />;
   }
 
-  return (
-    <div>
-      <ProductsList products={products} onClick={handleAddToCart} />
-    </div>
-  );
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <ProductsList products={products} onClick={handleAddToCart} />,
+    },
+    {
+      path: "cart",
+      element: (
+        <Cart
+          cart={cart}
+          handleRemoveFromCart={handleRemoveFromCart}
+          handleChangeQuantity={handleChangeQuantity}
+        />
+      ),
+    },
+  ]);
+
+  return <RouterProvider router={router}></RouterProvider>;
 };
 
 export default App;
